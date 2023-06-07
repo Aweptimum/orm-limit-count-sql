@@ -143,17 +143,17 @@ class BasicEntityPersisterTypeValueSqlTest extends OrmTestCase
 
         // Using a criteria as array
         $statement = $persister->getCountSQL(['value' => 'bar']);
-        self::assertEquals('SELECT COUNT(*) FROM "not-a-simple-entity" t0 WHERE t0."simple-entity-value" = ?', $statement);
+        self::assertEquals('SELECT COUNT(*) FROM (SELECT * FROM "not-a-simple-entity" t0 WHERE t0."simple-entity-value" = ?) AS t', $statement);
 
         // Using a criteria object
         $criteria  = new Criteria(Criteria::expr()->eq('value', 'bar'));
         $statement = $persister->getCountSQL($criteria);
-        self::assertEquals('SELECT COUNT(*) FROM "not-a-simple-entity" t0 WHERE t0."simple-entity-value" = ?', $statement);
+        self::assertEquals('SELECT COUNT(*) FROM (SELECT * FROM "not-a-simple-entity" t0 WHERE t0."simple-entity-value" = ?) AS t', $statement);
 
         // Using a criteria object w/ Limit
         $criteria  = new Criteria(Criteria::expr()->eq('value', 'bar'), null, null, 5000);
         $statement = $persister->getCountSQL($criteria);
-        self::assertEquals('SELECT COUNT(*) FROM "not-a-simple-entity" t0 WHERE t0."simple-entity-value" = ? LIMIT 5000', $statement);
+        self::assertEquals('SELECT COUNT(*) FROM (SELECT * FROM "not-a-simple-entity" t0 WHERE t0."simple-entity-value" = ? LIMIT 5000) AS t', $statement);
     }
 
     public function testCountEntities(): void
